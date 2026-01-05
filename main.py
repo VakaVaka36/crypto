@@ -558,3 +558,54 @@ class UnifiedCryptoApp:
                         return
             else:
                 text_to_decrypt = result_text
+                 # Проверяем ключ перед операцией
+            is_valid, error_msg, score = self.crypto.key_validator.validate_key(current_key)
+            
+            if not is_valid:
+                response = messagebox.askyesno(
+                    "Ошибка ключа",
+                    f"{error_msg}\n\nПродолжить с этим ключом?"
+                )
+                if not response:
+                    return
+            
+            # Выполняем дешифрование
+            result = self.crypto.decrypt(text_to_decrypt, current_key)
+            
+            # Сохраняем историю операций
+            self.last_decrypted_text = result
+            self.last_key = current_key
+            self.last_operation = 'decrypt'
+            
+            # Отображаем результат
+            self.result_text.delete("1.0", tk.END)
+            self.result_text.insert("1.0", result)
+            
+            # Обновляем метку операции
+            self.operation_label.config(
+                text="🔓 Текст успешно расшифрован",
+                foreground='green'
+            )
+            
+            # Обновляем статус бар
+            self.status_bar.config(
+                text=f"Текст успешно расшифрован. Использован ключ длиной {len(current_key)} символов"
+            )
+            
+        except binascii.Error:
+            messagebox.showerror(
+                "Ошибка формата",
+                "Неверный формат зашифрованного текста.\n"
+                "Убедитесь, что вводите корректные hex-данные для дешифрования."
+            )
+            self.operation_label.config(
+                text="❌ Ошибка: неверный формат данных",
+                foreground='red'
+            )
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка при дешифровании: {str(e)}")
+            self.operation_label.config(
+                text=f"❌ Ошибка при дешифровании",
+                foreground='red'
+            )
+    
