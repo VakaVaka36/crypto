@@ -203,3 +203,13 @@ class UnifiedCryptoApp:
         
         self.crypto = SHA1Crypto()
         self.setup_ui()
+
+        # Связываем проверку ключа с изменением текста
+        self.key_entry.bind('<KeyRelease>', self.on_key_changed)
+        
+        # Флажок для отслеживания последней операции
+        self.last_operation = None  # 'encrypt' или 'decrypt'
+        self.last_encrypted_text = ""  # Сохраняем последний зашифрованный текст
+        self.last_decrypted_text = ""  # Сохраняем последний расшифрованный текст
+        self.last_source_text = ""  # Сохраняем последний исходный текст для шифрования
+        self.last_key = ""  # Сохраняем последний использованный ключ
