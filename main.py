@@ -302,5 +302,30 @@ class UnifiedCryptoApp:
             width=20
         )
         self.clear_btn.pack(side=tk.LEFT, padx=10)
+
+         #СЕКЦИЯ РЕЗУЛЬТАТА
+        result_frame = ttk.LabelFrame(main_frame, text="Результат", padding="10")
+        result_frame.grid(row=3, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
+        result_frame.columnconfigure(0, weight=1)
+        result_frame.rowconfigure(0, weight=1)
+        
+        # Поле для отображения результата
+        self.result_text = scrolledtext.ScrolledText(
+            result_frame, 
+            width=80, 
+            height=8,
+            font=('Courier', 10),
+            wrap=tk.WORD
+        )
+        self.result_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        
+        # Метка статуса операции
+        self.operation_label = ttk.Label(
+            result_frame,
+            text="Ожидание операции...",
+            font=('Arial', 9, 'italic')
+        )
+        self.operation_label.grid(row=1, column=0, sticky=tk.W, pady=(5, 0))
+        
         
      
