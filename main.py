@@ -213,3 +213,12 @@ class UnifiedCryptoApp:
         self.last_decrypted_text = ""  # Сохраняем последний расшифрованный текст
         self.last_source_text = ""  # Сохраняем последний исходный текст для шифрования
         self.last_key = ""  # Сохраняем последний использованный ключ
+
+    def setup_ui(self):
+        # Основной контейнер
+        main_frame = ttk.Frame(self.root, padding="15")
+        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
+        main_frame.columnconfigure(1, weight=1)
