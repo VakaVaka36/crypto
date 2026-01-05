@@ -202,7 +202,7 @@ class SHA1Crypto:
 class UnifiedCryptoApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Криптографический модуль")
+        self.root.title("Криптографический модуль с динамической проверкой ключа")
         self.root.geometry("850x750")
         
         # Настраиваем цвета для разных уровней безопасности
