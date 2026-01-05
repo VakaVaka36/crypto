@@ -12,7 +12,20 @@ class SimpleKeyValidator:
     
     @staticmethod
     def validate_key(key: str) -> tuple:
+        """
+        Простая проверка ключа.
+        
+        Returns:
+            tuple: (is_valid, error_message, score)
+        """
         if not key:
-            return False, 'Ключ не может быть пустым', 0
-        if len(key) < SimpleKeyValidator.MIN_LENGTH:
-            return False, f'Ключ должен быть не менее {MIN_LENGTH} символов', 0
+            return False, "Ключ не может быть пустым", 0
+        
+        score = 0
+        max_score = 100
+        
+        # 1. Проверка длины (0-30 баллов)
+        if len(key) >= 12:
+            score += 30
+        elif len(key) >= 8:
+            score += 20
