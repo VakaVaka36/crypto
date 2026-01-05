@@ -478,3 +478,46 @@ class UnifiedCryptoApp:
                     "⚠ ВНИМАНИЕ: Использование слабого ключа может привести\n"
                     "к компрометации зашифрованных данных!"
                 )
+                if not response:
+                    return
+            elif score < 40:  # Слабый, но допустимый ключ
+                response = messagebox.askyesno(
+                    "Слабый ключ",
+                    f"Ключ имеет низкую оценку безопасности ({score}/100).\n"
+                    "Рекомендуется использовать более сложный ключ.\n\n"
+                    "Продолжить с текущим ключом?"
+                )
+                if not response:
+                    return
+            
+            # Выполняем шифрование
+            result = self.crypto.encrypt(source_text, current_key)
+            
+            # Сохраняем историю операций
+            self.last_source_text = source_text
+            self.last_key = current_key
+            self.last_encrypted_text = result
+            self.last_operation = 'encrypt'
+            
+            # Отображаем результат
+            self.result_text.delete("1.0", tk.END)
+            self.result_text.insert("1.0", result)
+            
+            # Обновляем метку операции
+            self.operation_label.config(
+                text="🔒 Текст успешно зашифрован",
+                foreground='green'
+            )
+            
+            # Обновляем статус бар
+            self.status_bar.config(
+                text=f"Текст успешно зашифрован. Длина ключа: {len(current_key)} символов, оценка: {score}/100"
+            )
+            
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка при шифровании: {str(e)}")
+            self.operation_label.config(
+                text=f"❌ Ошибка при шифровании",
+                foreground='red'
+            )
+    
