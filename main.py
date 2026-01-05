@@ -6,9 +6,18 @@ import binascii
 import re
 from typing import Tuple
 
+# Определяем SimpleKeyValidator ПЕРЕД его использованием
 class SimpleKeyValidator:
+    """
+    Простой валидатор ключа с минимальными требованиями.
+    """
+    
     MIN_LENGTH = 8
-    COMMON_PASSWORDS = {'password', '123456', 'qwerty', 'admin'}
+    COMMON_PASSWORDS = {
+        'password', '123456', 'qwerty', 'admin', 'welcome',
+        'password1', '12345678', 'abc123', '111111', 'letmein',
+        'qwerty123', 'admin123', '123123', '123456789', '1234567890'
+    }
     
     @staticmethod
     def validate_key(key: str) -> tuple:
@@ -49,17 +58,18 @@ class SimpleKeyValidator:
         # 5. Проверка наличия специальных символов (20 баллов)
         if re.search(r'[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]', key):
             score += 20
-
+        
         # 6. Проверка на однотипность
         if key.isdigit():
             return False, "Ключ не должен состоять только из цифр", score
+        
         if key.isalpha():
             return False, "Ключ не должен состоять только из букв", score
-
+        
         # 7. Проверка на последовательности
         if re.search(r'(123|234|345|456|567|678|789|abc|bcd|cde|def|qwe|wer|ert)', key.lower()):
             score -= 10
-
+        
         # Определяем уровень безопасности
         if score >= 80:
             return True, f"Отличный ключ ({score}/100)", score
@@ -69,18 +79,20 @@ class SimpleKeyValidator:
             return True, f"Средний ключ ({score}/100)", score
         else:
             return True, f"Слабый ключ ({score}/100)", score
-        
+    
     @staticmethod
     def get_key_requirements() -> str:
+        """Возвращает требования к ключу в текстовом виде."""
         return (
             f"Требования к ключу:\n"
-            f"Не менее {SimpleKeyValidator.MIN_LENGTH} символов\n"
-            f"Хотя бы одна заглавная буква\n"
-            f"Хотя бы одна цифра\n"
-            f"Не использовать простые пароли\n"
-            f"Смешивать разные типы символов"
+            f"✓ Не менее {SimpleKeyValidator.MIN_LENGTH} символов\n"
+            f"✓ Хотя бы одна заглавная буква\n"
+            f"✓ Хотя бы одна цифра\n"
+            f"✓ Не использовать простые пароли\n"
+            f"✓ Смешивать разные типы символов"
         )
-    
+
+
 class SHA1Crypto:
     def __init__(self):
         self.iv = [
@@ -119,7 +131,7 @@ class SHA1Crypto:
             for j in range(16, 80):
                 word = (words[j-3] ^ words[j-8] ^ words[j-14] ^ words[j-16])
                 words.append(self._left_rotate(word, 1))
-
+            
             a, b, c, d, e = h0, h1, h2, h3, h4
             
             for j in range(80):
@@ -136,21 +148,21 @@ class SHA1Crypto:
                     f = b ^ c ^ d
                     k = 0xCA62C1D6
                 
-                    temp = (self._left_rotate(a, 5) + f + e + k + words[j]) & 0xffffffff
-                    e = d
-                    d = c
-                    c = self._left_rotate(b, 30)
-                    b = a
-                    a = temp
-
-                h0 = (h0 + a) & 0xffffffff
-                h1 = (h1 + b) & 0xffffffff
-                h2 = (h2 + c) & 0xffffffff
-                h3 = (h3 + d) & 0xffffffff
-                h4 = (h4 + e) & 0xffffffff
-
-            return '%08x%08x%08x%08x%08x' % (h0, h1, h2, h3, h4)
+                temp = (self._left_rotate(a, 5) + f + e + k + words[j]) & 0xffffffff
+                e = d
+                d = c
+                c = self._left_rotate(b, 30)
+                b = a
+                a = temp
+            
+            h0 = (h0 + a) & 0xffffffff
+            h1 = (h1 + b) & 0xffffffff
+            h2 = (h2 + c) & 0xffffffff
+            h3 = (h3 + d) & 0xffffffff
+            h4 = (h4 + e) & 0xffffffff
         
+        return '%08x%08x%08x%08x%08x' % (h0, h1, h2, h3, h4)
+    
     def encrypt(self, text: str, key: str) -> str:
         """Шифрование текста"""
         key_hash = self.sha1_hash(key)
@@ -185,25 +197,26 @@ class SHA1Crypto:
             return True
         except ValueError:
             return False
-        
+
+
 class UnifiedCryptoApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Криптографический модуль")
+        self.root.title("Криптографический модуль с динамической проверкой ключа")
         self.root.geometry("850x750")
         
         # Настраиваем цвета для разных уровней безопасности
         self.colors = {
-            'weak': '#ff6b6b',
-            'medium': '#ffd93d',
-            'strong': '#6bcf7f',
-            'excellent': '#4d96ff',
-            'default': '#cccccc' 
+            'weak': '#ff6b6b',      # Красный
+            'medium': '#ffd93d',    # Желтый
+            'strong': '#6bcf7f',    # Зеленый
+            'excellent': '#4d96ff', # Синий
+            'default': '#cccccc'    # Серый
         }
         
         self.crypto = SHA1Crypto()
         self.setup_ui()
-
+        
         # Связываем проверку ключа с изменением текста
         self.key_entry.bind('<KeyRelease>', self.on_key_changed)
         
@@ -213,7 +226,7 @@ class UnifiedCryptoApp:
         self.last_decrypted_text = ""  # Сохраняем последний расшифрованный текст
         self.last_source_text = ""  # Сохраняем последний исходный текст для шифрования
         self.last_key = ""  # Сохраняем последний использованный ключ
-
+    
     def setup_ui(self):
         # Основной контейнер
         main_frame = ttk.Frame(self.root, padding="15")
@@ -222,7 +235,7 @@ class UnifiedCryptoApp:
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
         main_frame.columnconfigure(1, weight=1)
-
+        
         #ВВОД ТЕКСТА
         input_frame = ttk.LabelFrame(main_frame, text="Исходный текст", padding="10")
         input_frame.grid(row=0, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
@@ -230,7 +243,7 @@ class UnifiedCryptoApp:
         
         self.input_text = scrolledtext.ScrolledText(input_frame, width=80, height=8, font=('Courier', 10))
         self.input_text.grid(row=0, column=0, sticky=(tk.W, tk.E))
-
+        
         #СЕКЦИЯ КЛЮЧА
         key_frame = ttk.LabelFrame(main_frame, text="Ключ шифрования", padding="10")
         key_frame.grid(row=1, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
@@ -244,7 +257,7 @@ class UnifiedCryptoApp:
         
         self.key_entry = ttk.Entry(key_input_frame, width=60, show="*", font=('Courier', 10))
         self.key_entry.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(0, 10))
-
+        
         self.show_key_var = tk.BooleanVar(value=False)
         self.show_key_btn = ttk.Checkbutton(
             key_input_frame, 
@@ -265,16 +278,16 @@ class UnifiedCryptoApp:
             mode='determinate'
         )
         self.key_progress.grid(row=0, column=0, sticky=tk.W, padx=(0, 10))
-
-         # Метка с оценкой ключа
+        
+        # Метка с оценкой ключа
         self.key_status_label = ttk.Label(
             self.key_security_frame, 
             text="Введите ключ",
             font=('Arial', 9)
         )
         self.key_status_label.grid(row=0, column=1, sticky=tk.W)
-
-         #СЕКЦИЯ КНОПОК
+        
+        #СЕКЦИЯ КНОПОК
         button_frame = ttk.Frame(main_frame)
         button_frame.grid(row=2, column=0, columnspan=3, pady=15)
         
@@ -302,8 +315,8 @@ class UnifiedCryptoApp:
             width=20
         )
         self.clear_btn.pack(side=tk.LEFT, padx=10)
-
-         #СЕКЦИЯ РЕЗУЛЬТАТА
+        
+        #СЕКЦИЯ РЕЗУЛЬТАТА
         result_frame = ttk.LabelFrame(main_frame, text="Результат", padding="10")
         result_frame.grid(row=3, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
         result_frame.columnconfigure(0, weight=1)
@@ -326,7 +339,7 @@ class UnifiedCryptoApp:
             font=('Arial', 9, 'italic')
         )
         self.operation_label.grid(row=1, column=0, sticky=tk.W, pady=(5, 0))
-
+        
         #СЕКЦИЯ ТРЕБОВАНИЙ
         requirements_frame = ttk.LabelFrame(main_frame, text="Требования к ключу", padding="10")
         requirements_frame.grid(row=4, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 5))
@@ -338,8 +351,8 @@ class UnifiedCryptoApp:
             justify=tk.LEFT
         )
         self.requirements_label.pack()
-
-                #СТАТУС БАР
+        
+        #СТАТУС БАР
         self.status_bar = ttk.Label(
             self.root, 
             text="Готов к работе. Введите текст и ключ.", 
@@ -347,10 +360,10 @@ class UnifiedCryptoApp:
             padding=5
         )
         self.status_bar.grid(row=1, column=0, sticky=(tk.W, tk.E))
-
+        
         # Загрузка тестовых данных
         self.load_test_data()
-        
+    
     def toggle_key_visibility(self):
         """Переключение видимости ключа"""
         if self.show_key_var.get():
@@ -403,13 +416,14 @@ class UnifiedCryptoApp:
                 text=f"{emoji} {message}",
                 foreground=color
             )
-        
+    
     def check_if_encryption_needed(self) -> Tuple[bool, str]:
-        
-        "Проверяет, нужно ли выполнять шифрование или данные уже зашифрованы."
+        """
+        Проверяет, нужно ли выполнять шифрование или данные уже зашифрованы.
         
         Returns:
-        Tuple[bool, str]: (нужно_шифровать, сообщение)
+            Tuple[bool, str]: (нужно_шифровать, сообщение)
+        """
         current_key = self.key_entry.get().strip()
         source_text = self.input_text.get("1.0", tk.END).strip()
         result_text = self.result_text.get("1.0", tk.END).strip()
@@ -520,6 +534,7 @@ class UnifiedCryptoApp:
                 text=f"❌ Ошибка при шифровании",
                 foreground='red'
             )
+    
     def decrypt_text(self):
         """Дешифрование текста"""
         try:
@@ -558,7 +573,8 @@ class UnifiedCryptoApp:
                         return
             else:
                 text_to_decrypt = result_text
-                 # Проверяем ключ перед операцией
+            
+            # Проверяем ключ перед операцией
             is_valid, error_msg, score = self.crypto.key_validator.validate_key(current_key)
             
             if not is_valid:
@@ -642,6 +658,21 @@ class UnifiedCryptoApp:
         
         # Обновляем статус бар
         self.status_bar.config(text="Все поля очищены. Готов к работе.")
+    
+    def load_test_data(self):
+        """Загрузка тестовых данных"""
+        test_data = """Конфиденциальная информация компании "ТехноПрогресс":
+
+1. Финансовый отчет за Q1 2024:
+   - Выручка: $1,250,000
+   - Чистая прибыль: $315,000
+   - Рост: 15.2% к прошлому году
+
+2. Новые проекты:
+   - Проект "Альфа": разработка ИИ-ассистента
+   - Проект "Бета": облачное хранилище
+   - Проект "Гамма": IoT-платформа"""
+        
         self.input_text.insert("1.0", test_data)
         self.key_entry.insert(0, "SecureKey2024!")
         
