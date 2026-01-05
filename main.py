@@ -347,6 +347,9 @@ class UnifiedCryptoApp:
             padding=5
         )
         self.status_bar.grid(row=1, column=0, sticky=(tk.W, tk.E))
+
+        # Загрузка тестовых данных
+        self.load_test_data()
         
         
         
