@@ -244,3 +244,25 @@ class UnifiedCryptoApp:
         
         self.key_entry = ttk.Entry(key_input_frame, width=60, show="*", font=('Courier', 10))
         self.key_entry.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(0, 10))
+
+        self.show_key_var = tk.BooleanVar(value=False)
+        self.show_key_btn = ttk.Checkbutton(
+            key_input_frame, 
+            text="Показать ключ", 
+            variable=self.show_key_var,
+            command=self.toggle_key_visibility
+        )
+        self.show_key_btn.grid(row=0, column=2)
+        
+        # Вторая строка: динамическая индикация безопасности
+        self.key_security_frame = ttk.Frame(key_frame)
+        self.key_security_frame.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
+        
+        # Полоса прогресса (визуализация силы ключа)
+        self.key_progress = ttk.Progressbar(
+            self.key_security_frame, 
+            length=300,
+            mode='determinate'
+        )
+        self.key_progress.grid(row=0, column=0, sticky=tk.W, padx=(0, 10))
+     
