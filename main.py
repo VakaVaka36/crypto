@@ -338,6 +338,15 @@ class UnifiedCryptoApp:
             justify=tk.LEFT
         )
         self.requirements_label.pack()
+
+                #СТАТУС БАР
+        self.status_bar = ttk.Label(
+            self.root, 
+            text="Готов к работе. Введите текст и ключ.", 
+            relief=tk.SUNKEN,
+            padding=5
+        )
+        self.status_bar.grid(row=1, column=0, sticky=(tk.W, tk.E))
         
         
         
