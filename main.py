@@ -404,5 +404,45 @@ class UnifiedCryptoApp:
                 foreground=color
             )
         
+    def check_if_encryption_needed(self) -> Tuple[bool, str]:
         
+        "Проверяет, нужно ли выполнять шифрование или данные уже зашифрованы."
+        
+        Returns:
+        Tuple[bool, str]: (нужно_шифровать, сообщение)
+        current_key = self.key_entry.get().strip()
+        source_text = self.input_text.get("1.0", tk.END).strip()
+        result_text = self.result_text.get("1.0", tk.END).strip()
+        
+        # Проверка 1: Пустые поля
+        if not source_text:
+            return False, "Введите текст для шифрования в поле 'Исходный текст'."
+        
+        if not current_key:
+            return False, "Введите ключ шифрования."
+        
+        # Проверка 2: Текст уже зашифрован (hex в результате)
+        if result_text and self.crypto.is_hex_string(result_text):
+            if self.last_operation == 'encrypt':
+                # Проверяем, не тот же ли это текст и ключ
+                if (source_text == self.last_source_text and 
+                    current_key == self.last_key and
+                    result_text == self.last_encrypted_text):
+                    return False, "Текст уже зашифрован с этим ключом.\n\n" \
+                                 "Если хотите зашифровать другой текст:\n" \
+                                 "1. Измените исходный текст\n" \
+                                 "2. Измените ключ\n" \
+                                 "3. Нажмите 'Очистить всё' и введите новые данные"
+        
+        # Проверка 3: Тот же текст и ключ, что и в прошлый раз
+        if (self.last_operation == 'encrypt' and 
+            source_text == self.last_source_text and 
+            current_key == self.last_key):
+            return False, "Вы пытаетесь зашифровать тот же текст тем же ключом.\n\n" \
+                         "Если хотите получить другой результат:\n" \
+                         "1. Измените исходный текст\n" \
+                         "2. Измените ключ шифрования"
+        
+        return True, "Шифрование может быть выполнено."
+    
      
