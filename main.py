@@ -222,3 +222,11 @@ class UnifiedCryptoApp:
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
         main_frame.columnconfigure(1, weight=1)
+        
+        #ВВОД ТЕКСТА
+        input_frame = ttk.LabelFrame(main_frame, text="Исходный текст", padding="10")
+        input_frame.grid(row=0, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
+        input_frame.columnconfigure(0, weight=1)
+        
+        self.input_text = scrolledtext.ScrolledText(input_frame, width=80, height=8, font=('Courier', 10))
+        self.input_text.grid(row=0, column=0, sticky=(tk.W, tk.E))
