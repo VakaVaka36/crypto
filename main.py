@@ -119,3 +119,26 @@ class SHA1Crypto:
             for j in range(16, 80):
                 word = (words[j-3] ^ words[j-8] ^ words[j-14] ^ words[j-16])
                 words.append(self._left_rotate(word, 1))
+
+            a, b, c, d, e = h0, h1, h2, h3, h4
+            
+            for j in range(80):
+                if 0 <= j <= 19:
+                    f = (b & c) | ((~b) & d)
+                    k = 0x5A827999
+                elif 20 <= j <= 39:
+                    f = b ^ c ^ d
+                    k = 0x6ED9EBA1
+                elif 40 <= j <= 59:
+                    f = (b & c) | (b & d) | (c & d)
+                    k = 0x8F1BBCDC
+                else:
+                    f = b ^ c ^ d
+                    k = 0xCA62C1D6
+                
+                temp = (self._left_rotate(a, 5) + f + e + k + words[j]) & 0xffffffff
+                e = d
+                d = c
+                c = self._left_rotate(b, 30)
+                b = a
+                a = temp
