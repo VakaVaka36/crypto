@@ -520,4 +520,41 @@ class UnifiedCryptoApp:
                 text=f"❌ Ошибка при шифровании",
                 foreground='red'
             )
-    
+    def decrypt_text(self):
+        """Дешифрование текста"""
+        try:
+            current_key = self.key_entry.get().strip()
+            
+            if not current_key:
+                messagebox.showwarning("Внимание", "Введите ключ шифрования")
+                return
+            
+            # Определяем, какой текст дешифровать
+            result_text = self.result_text.get("1.0", tk.END).strip()
+            
+            if not result_text:
+                messagebox.showwarning("Внимание", 
+                    "Нет данных для дешифрования.\n"
+                    "Сначала зашифруйте текст или введите hex-данные в поле 'Результат'.")
+                return
+            
+            
+            # Проверка 2: Текст не является hex-строкой
+            if not self.crypto.is_hex_string(result_text):
+                # Если не hex, проверяем, не является ли это уже дешифрованным текстом
+                if self.last_operation == 'decrypt':
+                    messagebox.showinfo("Информация", 
+                        "Текст уже расшифрован.\n"
+                        "Для повторного шифрования используйте кнопку 'Зашифровать'.")
+                    return
+                else:
+                    # Пытаемся дешифровать последний зашифрованный текст
+                    if self.last_encrypted_text:
+                        text_to_decrypt = self.last_encrypted_text
+                    else:
+                        messagebox.showerror("Ошибка",
+                            "Текст в поле 'Результат' не является hex-данными.\n"
+                            "Убедитесь, что это зашифрованный текст в hex-формате.")
+                        return
+            else:
+                text_to_decrypt = result_text
