@@ -351,6 +351,58 @@ class UnifiedCryptoApp:
         # Загрузка тестовых данных
         self.load_test_data()
         
+         def toggle_key_visibility(self):
+        """Переключение видимости ключа"""
+        if self.show_key_var.get():
+            self.key_entry.config(show="")
+        else:
+            self.key_entry.config(show="*")
+    
+    def on_key_changed(self, event=None):
+        """Динамическая проверка ключа при изменении"""
+        key = self.key_entry.get().strip()
+        
+        if not key:
+            # Сброс индикаторов при пустом ключе
+            self.key_progress['value'] = 0
+            self.key_status_label.config(
+                text="Введите ключ",
+                foreground='gray'
+            )
+            return
+        
+        # Проверяем ключ
+        is_valid, message, score = self.crypto.key_validator.validate_key(key)
+        
+        # Обновляем полосу прогресса
+        self.key_progress['value'] = score
+        
+        # Определяем цвет и текст в зависимости от силы ключа
+        if not is_valid:
+            # Ключ не соответствует минимальным требованиям
+            self.key_status_label.config(
+                text=f"❌ {message}",
+                foreground='red'
+            )
+        else:
+            # Ключ соответствует требованиям, показываем силу
+            if score >= 80:
+                color = self.colors['excellent']
+                emoji = "⭐⭐⭐⭐⭐"
+            elif score >= 60:
+                color = self.colors['strong']
+                emoji = "⭐⭐⭐⭐"
+            elif score >= 40:
+                color = self.colors['medium']
+                emoji = "⭐⭐⭐"
+            else:
+                color = self.colors['weak']
+                emoji = "⭐⭐"
+            
+            self.key_status_label.config(
+                text=f"{emoji} {message}",
+                foreground=color
+            )
         
         
      
