@@ -94,3 +94,16 @@ class SHA1Crypto:
     
     def _left_rotate(self, n, b):
         return ((n << b) | (n >> (32 - b))) & 0xffffffff
+    
+    def _sha1_padding(self, message):
+        if isinstance(message, str):
+            message = message.encode('utf-8')
+        
+        orig_len = len(message) * 8
+        message += b'\x80'
+        
+        while (len(message) * 8) % 512 != 448:
+            message += b'\x00'
+        
+        message += struct.pack('>Q', orig_len)
+        return message
