@@ -609,3 +609,37 @@ class UnifiedCryptoApp:
                 foreground='red'
             )
     
+    def clear_all(self):
+        """Очистка всех полей и сброс состояния"""
+        # Очищаем текстовые поля
+        self.input_text.delete("1.0", tk.END)
+        self.result_text.delete("1.0", tk.END)
+        self.key_entry.delete(0, tk.END)
+        
+        # Сбрасываем индикаторы
+        self.key_progress['value'] = 0
+        self.key_status_label.config(
+            text="Введите ключ",
+            foreground='gray'
+        )
+        
+        # Сбрасываем переключатель видимости
+        self.show_key_var.set(False)
+        self.key_entry.config(show="*")
+        
+        # Сбрасываем метки
+        self.operation_label.config(
+            text="Ожидание операции...",
+            foreground='gray'
+        )
+        
+        # Сбрасываем историю операций
+        self.last_operation = None
+        self.last_encrypted_text = ""
+        self.last_decrypted_text = ""
+        self.last_source_text = ""
+        self.last_key = ""
+        
+        # Обновляем статус бар
+        self.status_bar.config(text="Все поля очищены. Готов к работе.")
+    
