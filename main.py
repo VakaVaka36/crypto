@@ -69,3 +69,14 @@ class SimpleKeyValidator:
             return True, f"Средний ключ ({score}/100)", score
         else:
             return True, f"Слабый ключ ({score}/100)", score
+        
+    @staticmethod
+    def get_key_requirements() -> str:
+        return (
+            f"Требования к ключу:\n"
+            f"Не менее {SimpleKeyValidator.MIN_LENGTH} символов\n"
+            f"Хотя бы одна заглавная буква\n"
+            f"Хотя бы одна цифра\n"
+            f"Не использовать простые пароли\n"
+            f"Смешивать разные типы символов"
+        )
