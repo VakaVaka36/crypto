@@ -185,3 +185,21 @@ class SHA1Crypto:
             return True
         except ValueError:
             return False
+        
+class UnifiedCryptoApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Криптографический модуль")
+        self.root.geometry("850x750")
+        
+        # Настраиваем цвета для разных уровней безопасности
+        self.colors = {
+            'weak': '#ff6b6b',
+            'medium': '#ffd93d',
+            'strong': '#6bcf7f',
+            'excellent': '#4d96ff',
+            'default': '#cccccc' 
+        }
+        
+        self.crypto = SHA1Crypto()
+        self.setup_ui()
