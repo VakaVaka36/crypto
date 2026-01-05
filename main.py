@@ -41,3 +41,7 @@ class SimpleKeyValidator:
         # 3. Проверка наличия заглавной буквы (15 баллов)
         if re.search(r'[A-ZА-Я]', key):
             score += 15
+        
+        # 4. Проверка наличия цифры (15 баллов)
+        if re.search(r'\d', key):
+            score += 15
