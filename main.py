@@ -351,7 +351,7 @@ class UnifiedCryptoApp:
         # Загрузка тестовых данных
         self.load_test_data()
         
-         def toggle_key_visibility(self):
+    def toggle_key_visibility(self):
         """Переключение видимости ключа"""
         if self.show_key_var.get():
             self.key_entry.config(show="")
@@ -445,4 +445,36 @@ class UnifiedCryptoApp:
         
         return True, "Шифрование может быть выполнено."
     
-     
+    def encrypt_text(self):
+        """Шифрование текста"""
+        try:
+            # Проверяем, нужно ли выполнять шифрование
+            need_encrypt, message = self.check_if_encryption_needed()
+            
+            if not need_encrypt:
+                # Показываем диалоговое окно с информацией
+                response = messagebox.askyesno(
+                    "Повторное шифрование",
+                    f"{message}\n\n"
+                    "Вы уверены, что хотите выполнить шифрование?"
+                )
+                if not response:
+                    return
+            
+            # Получаем текущие данные
+            source_text = self.input_text.get("1.0", tk.END).strip()
+            current_key = self.key_entry.get().strip()
+            
+            # Проверяем ключ перед операцией
+            is_valid, error_msg, score = self.crypto.key_validator.validate_key(current_key)
+            
+            if not is_valid:
+                # Ключ не соответствует минимальным требованиям
+                response = messagebox.askyesno(
+                    "Ошибка ключа",
+                    f"{error_msg}\n\n"
+                    "Ключ не соответствует минимальным требованиям безопасности.\n"
+                    "Хотите продолжить с этим ключом?\n\n"
+                    "⚠ ВНИМАНИЕ: Использование слабого ключа может привести\n"
+                    "к компрометации зашифрованных данных!"
+                )
