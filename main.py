@@ -49,7 +49,9 @@ class SimpleKeyValidator:
         # 5. Проверка наличия специальных символов (20 баллов)
         if re.search(r'[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]', key):
             score += 20
-            
+
         # 6. Проверка на однотипность
         if key.isdigit():
             return False, "Ключ не должен состоять только из цифр", score
+        if key.isalpha():
+            return False, "Ключ не должен состоять только из букв", score
