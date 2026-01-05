@@ -136,9 +136,17 @@ class SHA1Crypto:
                     f = b ^ c ^ d
                     k = 0xCA62C1D6
                 
-                temp = (self._left_rotate(a, 5) + f + e + k + words[j]) & 0xffffffff
-                e = d
-                d = c
-                c = self._left_rotate(b, 30)
-                b = a
-                a = temp
+                    temp = (self._left_rotate(a, 5) + f + e + k + words[j]) & 0xffffffff
+                    e = d
+                    d = c
+                    c = self._left_rotate(b, 30)
+                    b = a
+                    a = temp
+
+                h0 = (h0 + a) & 0xffffffff
+                h1 = (h1 + b) & 0xffffffff
+                h2 = (h2 + c) & 0xffffffff
+                h3 = (h3 + d) & 0xffffffff
+                h4 = (h4 + e) & 0xffffffff
+
+            return '%08x%08x%08x%08x%08x' % (h0, h1, h2, h3, h4)"
