@@ -55,3 +55,7 @@ class SimpleKeyValidator:
             return False, "Ключ не должен состоять только из цифр", score
         if key.isalpha():
             return False, "Ключ не должен состоять только из букв", score
+
+        # 7. Проверка на последовательности
+        if re.search(r'(123|234|345|456|567|678|789|abc|bcd|cde|def|qwe|wer|ert)', key.lower()):
+            score -= 10
