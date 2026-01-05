@@ -37,3 +37,7 @@ class SimpleKeyValidator:
         # 2. Проверка на простые пароли
         if key.lower() in SimpleKeyValidator.COMMON_PASSWORDS:
             return False, "Ключ слишком простой (в списке распространенных паролей)", 0
+        
+        # 3. Проверка наличия заглавной буквы (15 баллов)
+        if re.search(r'[A-ZА-Я]', key):
+            score += 15
