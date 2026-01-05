@@ -326,6 +326,19 @@ class UnifiedCryptoApp:
             font=('Arial', 9, 'italic')
         )
         self.operation_label.grid(row=1, column=0, sticky=tk.W, pady=(5, 0))
+
+        #СЕКЦИЯ ТРЕБОВАНИЙ
+        requirements_frame = ttk.LabelFrame(main_frame, text="Требования к ключу", padding="10")
+        requirements_frame.grid(row=4, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 5))
+        
+        requirements_text = SimpleKeyValidator.get_key_requirements()
+        self.requirements_label = ttk.Label(
+            requirements_frame, 
+            text=requirements_text,
+            justify=tk.LEFT
+        )
+        self.requirements_label.pack()
+        
         
         
      
