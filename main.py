@@ -222,7 +222,7 @@ class UnifiedCryptoApp:
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
         main_frame.columnconfigure(1, weight=1)
-        
+
         #ВВОД ТЕКСТА
         input_frame = ttk.LabelFrame(main_frame, text="Исходный текст", padding="10")
         input_frame.grid(row=0, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
@@ -230,3 +230,17 @@ class UnifiedCryptoApp:
         
         self.input_text = scrolledtext.ScrolledText(input_frame, width=80, height=8, font=('Courier', 10))
         self.input_text.grid(row=0, column=0, sticky=(tk.W, tk.E))
+
+        #СЕКЦИЯ КЛЮЧА
+        key_frame = ttk.LabelFrame(main_frame, text="Ключ шифрования", padding="10")
+        key_frame.grid(row=1, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
+        
+        # Первая строка: поле ввода и кнопка показа/скрытия
+        key_input_frame = ttk.Frame(key_frame)
+        key_input_frame.grid(row=0, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 5))
+        key_input_frame.columnconfigure(1, weight=1)
+        
+        ttk.Label(key_input_frame, text="Ключ:").grid(row=0, column=0, sticky=tk.W, padx=(0, 10))
+        
+        self.key_entry = ttk.Entry(key_input_frame, width=60, show="*", font=('Courier', 10))
+        self.key_entry.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(0, 10))
