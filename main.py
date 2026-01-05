@@ -273,4 +273,34 @@ class UnifiedCryptoApp:
             font=('Arial', 9)
         )
         self.key_status_label.grid(row=0, column=1, sticky=tk.W)
+
+         #СЕКЦИЯ КНОПОК
+        button_frame = ttk.Frame(main_frame)
+        button_frame.grid(row=2, column=0, columnspan=3, pady=15)
+        
+        # Кнопки основного функционала
+        self.encrypt_btn = ttk.Button(
+            button_frame, 
+            text="🔒 Зашифровать", 
+            command=self.encrypt_text,
+            width=20
+        )
+        self.encrypt_btn.pack(side=tk.LEFT, padx=10)
+        
+        self.decrypt_btn = ttk.Button(
+            button_frame, 
+            text="🔓 Расшифровать", 
+            command=self.decrypt_text,
+            width=20
+        )
+        self.decrypt_btn.pack(side=tk.LEFT, padx=10)
+        
+        self.clear_btn = ttk.Button(
+            button_frame, 
+            text="🗑️ Очистить всё", 
+            command=self.clear_all,
+            width=20
+        )
+        self.clear_btn.pack(side=tk.LEFT, padx=10)
+        
      
