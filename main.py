@@ -265,4 +265,12 @@ class UnifiedCryptoApp:
             mode='determinate'
         )
         self.key_progress.grid(row=0, column=0, sticky=tk.W, padx=(0, 10))
+
+         # Метка с оценкой ключа
+        self.key_status_label = ttk.Label(
+            self.key_security_frame, 
+            text="Введите ключ",
+            font=('Arial', 9)
+        )
+        self.key_status_label.grid(row=0, column=1, sticky=tk.W)
      
