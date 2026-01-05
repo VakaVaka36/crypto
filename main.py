@@ -80,3 +80,17 @@ class SimpleKeyValidator:
             f"Не использовать простые пароли\n"
             f"Смешивать разные типы символов"
         )
+    
+class SHA1Crypto:
+    def __init__(self):
+        self.iv = [
+            0x67452301,
+            0xEFCDAB89,
+            0x98BADCFE,
+            0x10325476,
+            0xC3D2E1F0
+        ]
+        self.key_validator = SimpleKeyValidator()
+    
+    def _left_rotate(self, n, b):
+        return ((n << b) | (n >> (32 - b))) & 0xffffffff
