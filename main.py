@@ -107,3 +107,15 @@ class SHA1Crypto:
         
         message += struct.pack('>Q', orig_len)
         return message
+    
+    def sha1_hash(self, message):
+        message = self._sha1_padding(message)
+        h0, h1, h2, h3, h4 = self.iv
+        
+        for i in range(0, len(message), 64):
+            block = message[i:i+64]
+            words = list(struct.unpack('>16I', block))
+            
+            for j in range(16, 80):
+                word = (words[j-3] ^ words[j-8] ^ words[j-14] ^ words[j-16])
+                words.append(self._left_rotate(word, 1))
