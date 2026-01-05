@@ -59,3 +59,13 @@ class SimpleKeyValidator:
         # 7. Проверка на последовательности
         if re.search(r'(123|234|345|456|567|678|789|abc|bcd|cde|def|qwe|wer|ert)', key.lower()):
             score -= 10
+
+        # Определяем уровень безопасности
+        if score >= 80:
+            return True, f"Отличный ключ ({score}/100)", score
+        elif score >= 60:
+            return True, f"Хороший ключ ({score}/100)", score
+        elif score >= 40:
+            return True, f"Средний ключ ({score}/100)", score
+        else:
+            return True, f"Слабый ключ ({score}/100)", score
