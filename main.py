@@ -642,4 +642,19 @@ class UnifiedCryptoApp:
         
         # Обновляем статус бар
         self.status_bar.config(text="Все поля очищены. Готов к работе.")
-    
+        self.input_text.insert("1.0", test_data)
+        self.key_entry.insert(0, "SecureKey2024!")
+        
+        # Запускаем начальную проверку ключа
+        self.on_key_changed()
+
+
+def main():
+    """Главная функция запуска приложения"""
+    root = tk.Tk()
+    app = UnifiedCryptoApp(root)
+    root.mainloop()
+
+
+if __name__ == "__main__":
+    main()
