@@ -149,4 +149,39 @@ class SHA1Crypto:
                 h3 = (h3 + d) & 0xffffffff
                 h4 = (h4 + e) & 0xffffffff
 
-            return '%08x%08x%08x%08x%08x' % (h0, h1, h2, h3, h4)"
+            return '%08x%08x%08x%08x%08x' % (h0, h1, h2, h3, h4)
+        
+    def encrypt(self, text: str, key: str) -> str:
+        """Шифрование текста"""
+        key_hash = self.sha1_hash(key)
+        text_bytes = text.encode('utf-8')
+        key_bytes = bytes.fromhex(key_hash)
+        
+        encrypted = bytearray()
+        for i, byte in enumerate(text_bytes):
+            key_byte = key_bytes[i % len(key_bytes)]
+            encrypted.append(byte ^ key_byte)
+        
+        return binascii.hexlify(encrypted).decode('utf-8')
+    
+    def decrypt(self, encrypted_hex: str, key: str) -> str:
+        """Дешифрование текста"""
+        key_hash = self.sha1_hash(key)
+        encrypted_bytes = binascii.unhexlify(encrypted_hex)
+        key_bytes = bytes.fromhex(key_hash)
+        
+        decrypted = bytearray()
+        for i, byte in enumerate(encrypted_bytes):
+            key_byte = key_bytes[i % len(key_bytes)]
+            decrypted.append(byte ^ key_byte)
+        
+        return decrypted.decode('utf-8')
+    
+    def is_hex_string(self, text: str) -> bool:
+        """Проверка, является ли строка hex-представлением"""
+        try:
+            # Пробуем преобразовать строку из hex
+            bytes.fromhex(text)
+            return True
+        except ValueError:
+            return False
