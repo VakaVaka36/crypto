@@ -29,3 +29,11 @@ class SimpleKeyValidator:
             score += 30
         elif len(key) >= 8:
             score += 20
+        elif len(key) >= 6:
+            score += 10
+        else:
+            return False, f"Ключ должен быть не менее {SimpleKeyValidator.MIN_LENGTH} символов", score
+        
+        # 2. Проверка на простые пароли
+        if key.lower() in SimpleKeyValidator.COMMON_PASSWORDS:
+            return False, "Ключ слишком простой (в списке распространенных паролей)", 0
